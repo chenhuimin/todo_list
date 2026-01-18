@@ -1,0 +1,18 @@
+[project]
+name = "todo-backend"
+version = "1.0.0"
+description = "FastAPI backend for Todo List"
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy",
+    "pydantic",
+    "python-multipart",
+    "pyjwt",
+    "passlib[bcrypt]",
+    "python-jose[cryptography]",
+]
+
+[tool.uv]
+dev-dependencies = []
