@@ -8,6 +8,23 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Auth API
+export const authApi = {
+  login: (data: FormData) => api.post<{ access_token: string; token_type: string }>('/token', data, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  }),
+  register: (data: any) => api.post('/register', data),
+  getMe: () => api.get('/users/me'),
+};
+
 // Todo API
 export const todoApi = {
   getAll: (params?: {

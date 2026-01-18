@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from models import Todo, TeamMember
-from schemas import TodoCreate, TodoUpdate, TeamMemberCreate, TeamMemberUpdate
+from models import Todo, TeamMember, User
+from schemas import TodoCreate, TodoUpdate, TeamMemberCreate, TeamMemberUpdate, UserCreate
 from logger import setup_logger
 from typing import Optional
+from auth import get_password_hash
 
 logger = setup_logger(__name__)
 
@@ -115,3 +116,18 @@ def delete_team_member(db: Session, member_id: int):
         db.commit()
         logger.info(f"CRUD: 团队成员已删除, id={member_id}, name={name}")
     return db_member
+
+# User CRUD
+def get_user(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+def create_user(db: Session, user: UserCreate):
+    hashed_password = get_password_hash(user.password)
+    db_user = User(email=user.email, hashed_password=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
